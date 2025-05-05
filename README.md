@@ -5,7 +5,10 @@ Este es un proyecto de chat en tiempo real desarrollado con **Vite**, **React** 
 ## 📋 Enunciado del proyecto
 
 Puedes ver el enunciado completo del proyecto en el siguiente enlace:  
-[🔗 Enlace al enunciado del proyecto](AQUÍ_VA_TU_LINK)
+[🔗 Enlace al enunciado del proyecto](https://lhuguetboren.github.io/site-M07-9PRACTICA/)
+
+Puedes ver la teoría en el siguiente enlace:
+[🔗 Enlace a la teoría](https://lhuguetboren.github.io/site-M07-JS-ASINCRON/webSocket/)
 
 ## 🚀 Tecnologías utilizadas
 
