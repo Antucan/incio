@@ -4,6 +4,20 @@ const App: React.FC = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Selecciona un archivo primero.");
+      return;
+    }
+  };
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:4000");
@@ -36,6 +50,11 @@ const App: React.FC = () => {
         {messages.map((msg, i) => (
           <p key={i}>{msg}</p>
         ))}
+      </div>
+      <hr />
+      <div>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Subir archivo</button>
       </div>
     </div>
   );
