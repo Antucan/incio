@@ -20,6 +20,19 @@ const App: React.FC = () => {
       return;
     }
 
+    // **Validación del tamaño (máximo 1MB)**
+    if (file.size > 1048576) {
+      alert("El archivo es demasiado grande. Máximo permitido: 1MB.");
+      return;
+    }
+
+    // **Validación del tipo de archivo**
+    const extensionesPermitidas = ["application/pdf", "image/jpeg", "image/png"];
+    if (!extensionesPermitidas.includes(file.type)) {
+      alert("Formato de archivo no permitido. Solo se aceptan .pdf, .jpg y .png.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("archivo", file);
 
@@ -31,6 +44,7 @@ const App: React.FC = () => {
     const result = await response.text();
     alert(result);
   };
+
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:4000");

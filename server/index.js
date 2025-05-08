@@ -32,8 +32,22 @@ app.post("/upload", (req, res) => {
   }
 
   let archivo = req.files.archivo;
+
+  // **Validación del tamaño del archivo (máximo 1MB = 1048576 bytes)**
+  if (archivo.size > 1048576) {
+    return res.status(400).send("El archivo es demasiado grande. Máximo permitido: 1MB.");
+  }
+
+  // **Validación del tipo de archivo**
+  const extensionesPermitidas = ["application/pdf", "image/jpeg", "image/png"];
+  if (!extensionesPermitidas.includes(archivo.mimetype)) {
+    return res.status(400).send("Formato de archivo no permitido. Solo se aceptan .pdf, .jpg y .png.");
+  }
+
+  // Ruta de almacenamiento
   const uploadPath = path.join(__dirname, "uploads", archivo.name);
 
+  // Guardar archivo
   archivo.mv(uploadPath, (err) => {
     if (err) {
       return res.status(500).send(err);
