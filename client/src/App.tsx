@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import "./Upload.css";
+
 
 const App: React.FC = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
@@ -17,6 +19,17 @@ const App: React.FC = () => {
       alert("Selecciona un archivo primero.");
       return;
     }
+
+    const formData = new FormData();
+    formData.append("archivo", file);
+
+    const response = await fetch("http://localhost:4000/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.text();
+    alert(result);
   };
 
   useEffect(() => {
@@ -53,8 +66,10 @@ const App: React.FC = () => {
       </div>
       <hr />
       <div>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Subir archivo</button>
+        <div className="upload-container">
+          <input type="file" onChange={handleFileChange} />
+          <button onClick={handleUpload}>Subir archivo</button>
+        </div>
       </div>
     </div>
   );
