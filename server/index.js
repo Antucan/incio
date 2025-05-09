@@ -70,6 +70,20 @@ app.post("/api/message", (req, res) => {
   res.json({ sent: true });
 });
 
+const fs = require("fs");
+
+// Endpoint para obtener lista de archivos
+app.get("/files", (req, res) => {
+  const uploadDir = path.join(__dirname, "uploads");
+
+  fs.readdir(uploadDir, (err, files) => {
+    if (err) {
+      return res.status(500).send("Error al leer la carpeta de archivos.");
+    }
+    res.json(files);
+  });
+});
+
 server.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });

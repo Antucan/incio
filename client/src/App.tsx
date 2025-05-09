@@ -58,6 +58,18 @@ const App: React.FC = () => {
     return () => ws.close();
   }, []);
 
+  const [files, setFiles] = useState<string[]>([]);
+
+  const fetchFiles = async () => {
+    const response = await fetch("http://localhost:4000/files");
+    const data = await response.json();
+    setFiles(data);
+  };
+
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
   const sendMessage = async () => {
     if (!input) return;
     await fetch("http://localhost:4000/api/message", {
@@ -83,6 +95,17 @@ const App: React.FC = () => {
         <div className="upload-container">
           <input type="file" onChange={handleFileChange} />
           <button onClick={handleUpload}>Subir archivo</button>
+        </div>
+      </div>
+      <hr />
+      <div>
+        <h1>Archivos Subidos</h1>
+        <div className="file-list">
+          {files.map((file, index) => (
+            <div key={index} className="file-item">
+              {file}
+            </div>
+          ))}
         </div>
       </div>
     </div>
