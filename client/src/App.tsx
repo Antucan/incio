@@ -147,11 +147,18 @@ const App: React.FC = () => {
         <h1>Archivos Subidos</h1>
         <div className="file-list">
           {files.map((file, index) => (
-            <div key={index} className="file-item">
+            <a
+              key={index}
+              className="file-item"
+              href={`http://localhost:4000/download/${file}`}
+              download={file}
+            >
               {file}
-            </div>
+            </a>
           ))}
         </div>
+
+
       </div>
     </div>
   );
