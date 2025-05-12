@@ -32,3 +32,51 @@
     background-color: #0056b3;
   }
   
+  /* lista de archivos */
+  .file-list {
+    margin-top: 10px; /* Add spacing above the file list */
+    padding: 10px; /* Internal spacing */
+    border: 1px solid #ccc; /* Border around the file list */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background color */
+    max-height: 200px; /* Limit height */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+  }
+  
+  .file-item {
+    padding: 8px 12px; /* Internal spacing for each file */
+    margin-bottom: 5px; /* Space between file items */
+    border: 1px solid #ddd; /* Border for each file item */
+    border-radius: 3px; /* Rounded corners */
+    background-color: #fff; /* White background */
+    display: flex; /* Flex layout for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Space between file name and actions */
+    transition: background-color 0.3s; /* Smooth hover effect */
+  }
+  
+  .file-item:hover {
+    background-color: #f0f0f0; /* Slightly darker background on hover */
+    cursor: pointer; /* Pointer cursor on hover */
+  }
+  
+  .file-item span {
+    flex-grow: 1; /* Allow file name to take up available space */
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis; /* Add ellipsis for long file names */
+    white-space: nowrap; /* Prevent wrapping */
+  }
+  
+  .file-item button {
+    background-color: #007bff; /* Blue button */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 3px; /* Rounded corners */
+    padding: 5px 10px; /* Button padding */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth hover effect */
+  }
+  
+  .file-item button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }

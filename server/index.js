@@ -38,6 +38,7 @@ app.post("/api/login", (req, res) => {
   if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
 
   res.json({ user });
+});
 
 // Endpoint para subir archivos
 app.post("/upload", (req, res) => {
@@ -71,6 +72,22 @@ app.post("/upload", (req, res) => {
 
 });
 
+// Endpoint para obtener lista de archivos
+app.get("/files", (req, res) => {
+  const uploadDir = path.join(__dirname, "uploads");
+ 
+  fs.readdir(uploadDir, (err, files) => {
+    if (err) {
+      return res.status(500).send("Error al leer la carpeta de archivos.");
+    }
+    res.json(files);
+  });
+});
+ 
+server.listen(port, () => {
+  console.log(`Servidor escuchando en http://localhost:${port}`);
+});
+
 // Endpoint para enviar mensaje a todos los WebSocket conectados
 app.post("/api/message", (req, res) => {
   const { message } = req.body;
@@ -83,9 +100,5 @@ app.post("/api/message", (req, res) => {
   });
 
   res.json({ sent: true });
-});
-
-server.listen(port, () => {
-  console.log(`Servidor escuchando en http://localhost:${port}`);
 });
 

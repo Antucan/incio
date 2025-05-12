@@ -45,6 +45,7 @@ const App: React.FC = () => {
 
     const result = await response.text();
     alert(result);
+    fetchFiles();
   };
 
   useEffect(() => {
@@ -60,6 +61,18 @@ const App: React.FC = () => {
       return () => ws.close();
     }
   }, [user]);
+
+  const [files, setFiles] = useState<string[]>([]);
+
+  const fetchFiles = async () => {
+    const response = await fetch("http://localhost:4000/files");
+    const data = await response.json();
+    setFiles(data);
+  };
+
+  useEffect(() => {
+    fetchFiles();
+  }, []);
 
   const handleLogin = async () => {
     if (!email) return;
@@ -109,7 +122,15 @@ const App: React.FC = () => {
       <p>Bienvenido, {user.nombre}</p>
       <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Escribe un mensaje" />
       <button onClick={sendMessage}>Enviar</button>
-      <div>
+      <div
+        style={{
+          height: "300px", // Altura fija
+          width: "100%", // Ancho completo
+          overflowY: "auto", // Habilitar scroll vertical
+          border: "1px solid #ccc", // Borde para delimitar la caja
+          padding: "10px", // Espaciado interno
+          borderRadius: "5px", // Bordes redondeados
+        }}>
         {messages.map((msg, i) => (
           <p key={i}>{user.nombre}: {msg}</p>
         ))}
@@ -119,6 +140,17 @@ const App: React.FC = () => {
         <div className="upload-container">
           <input type="file" onChange={handleFileChange} />
           <button onClick={handleUpload}>Subir archivo</button>
+        </div>
+      </div>
+      <hr />
+      <div>
+        <h1>Archivos Subidos</h1>
+        <div className="file-list">
+          {files.map((file, index) => (
+            <div key={index} className="file-item">
+              {file}
+            </div>
+          ))}
         </div>
       </div>
     </div>
