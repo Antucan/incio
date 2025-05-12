@@ -102,3 +102,25 @@ app.post("/api/message", (req, res) => {
   res.json({ sent: true });
 });
 
+app.get("/download/:filename", (req, res) => {
+  const fileName = req.params.filename;
+  const filePath = path.join(__dirname, "uploads", fileName);
+
+  // Verifica si el archivo existe
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send("Archivo no encontrado.");
+  }
+
+  // Configura el encabezado para la descarga
+  res.download(filePath, fileName, (err) => {
+    if (err) {
+      console.error("Error al descargar el archivo:", err);
+      res.status(500).send("Error al procesar la descarga.");
+    }
+  });
+});
+
+
+
+
+
