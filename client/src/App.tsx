@@ -92,15 +92,17 @@ const App: React.FC = () => {
   };
 
   const sendMessage = async () => {
-    if (!input) return;
-
+    if (!input || !user) return;
+  
     await fetch("http://localhost:4000/api/message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: input }),
+      body: JSON.stringify({ message: input, userName: user.nombre }),
     });
+  
     setInput("");
   };
+  
 
   if (!user) {
     return (
@@ -132,7 +134,7 @@ const App: React.FC = () => {
           borderRadius: "5px", // Bordes redondeados
         }}>
         {messages.map((msg, i) => (
-          <p key={i}>{user.nombre}: {msg}</p>
+          <p key={i}>{msg}</p>
         ))}
       </div>
       <hr />
@@ -157,8 +159,6 @@ const App: React.FC = () => {
             </a>
           ))}
         </div>
-
-
       </div>
     </div>
   );
