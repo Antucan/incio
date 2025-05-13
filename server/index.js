@@ -54,9 +54,9 @@ app.post("/upload", (req, res) => {
   }
 
   // **Validación del tipo de archivo**
-  const extensionesPermitidas = ["application/pdf", "image/jpeg", "image/png"];
+  const extensionesPermitidas = ["text/plain"];
   if (!extensionesPermitidas.includes(archivo.mimetype)) {
-    return res.status(400).send("Formato de archivo no permitido. Solo se aceptan .pdf, .jpg y .png.");
+    return res.status(400).send("Formato de archivo no permitido. Solo se acepta .txt");
   }
 
   // Ruta de almacenamiento
@@ -75,7 +75,7 @@ app.post("/upload", (req, res) => {
 // Endpoint para obtener lista de archivos
 app.get("/files", (req, res) => {
   const uploadDir = path.join(__dirname, "uploads");
- 
+
   fs.readdir(uploadDir, (err, files) => {
     if (err) {
       return res.status(500).send("Error al leer la carpeta de archivos.");
@@ -83,7 +83,7 @@ app.get("/files", (req, res) => {
     res.json(files);
   });
 });
- 
+
 server.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
@@ -91,7 +91,7 @@ server.listen(port, () => {
 // Endpoint para enviar mensaje a todos los WebSocket conectados
 app.post("/api/message", (req, res) => {
   const { message } = req.body;
-  if (!message) {return res.status(400).json({ error: "Mensaje vacío" });}
+  if (!message) { return res.status(400).json({ error: "Mensaje vacío" }); }
 
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
@@ -100,5 +100,23 @@ app.post("/api/message", (req, res) => {
   });
 
   res.json({ sent: true });
+});
+
+// Endpoint para guardar texto como archivo
+app.post("/save-text", (req, res) => {
+  const { filename, content } = req.body;
+
+  if (!filename || !content) {
+    return res.status(400).send("Faltan datos: filename o content.");
+  }
+
+  const uploadPath = path.join(__dirname, "uploads", `${filename}.txt`);
+
+  fs.writeFile(uploadPath, content, (err) => {
+    if (err) {
+      return res.status(500).send("Error al guardar el archivo.");
+    }
+    res.send("Archivo guardado correctamente.");
+  });
 });
 

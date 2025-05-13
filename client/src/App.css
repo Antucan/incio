@@ -40,3 +40,22 @@
 .read-the-docs {
   color: #888;
 }
+
+.button-textarea {
+  background-color: #4caf50; /* Color de fondo verde */
+  color: white; /* Color del texto */
+  border: none; /* Sin borde */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de fuente */
+  border-radius: 5px; /* Bordes redondeados */
+  cursor: pointer; /* Cambia el cursor al pasar por encima */
+  transition: background-color 0.3s ease; /* Animación suave */
+}
+
+.button-textarea:hover {
+  background-color: #45a049; /* Color más oscuro al pasar el mouse */
+}
+
+.button-textarea:active {
+  background-color: #3e8e41; /* Color más oscuro al hacer clic */
+}

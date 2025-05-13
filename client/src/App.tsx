@@ -8,6 +8,7 @@ const App: React.FC = () => {
   const [input, setInput] = useState("");
   const [user, setUser] = useState<{ id: string; nombre: string; email: string } | null>(null);
   const [email, setEmail] = useState("");
+  const [textareaContent, setTextareaContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,9 +30,9 @@ const App: React.FC = () => {
     }
 
     // **Validación del tipo de archivo**
-    const extensionesPermitidas = ["application/pdf", "image/jpeg", "image/png"];
+    const extensionesPermitidas = ["text/plain"];
     if (!extensionesPermitidas.includes(file.type)) {
-      alert("Formato de archivo no permitido. Solo se aceptan .pdf, .jpg y .png.");
+      alert("Formato de archivo no permitido. Solo se acepta texto plano.");
       return;
     }
 
@@ -102,6 +103,29 @@ const App: React.FC = () => {
     setInput("");
   };
 
+  const handleSaveText = async () => {
+    if (!textareaContent) {
+      alert("El textarea está vacío.");
+      return;
+    }
+
+    const filename = prompt("Introduce el nombre del archivo (sin extensión):");
+    if (!filename) {
+      alert("Debes proporcionar un nombre para el archivo.");
+      return;
+    }
+
+    const response = await fetch("http://localhost:4000/save-text", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename, content: textareaContent }),
+    });
+
+    const result = await response.text();
+    alert(result);
+    fetchFiles();
+  };
+
   if (!user) {
     return (
       <div>
@@ -117,41 +141,55 @@ const App: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>Chat REST → WebSocket</h1>
-      <p>Bienvenido, {user.nombre}</p>
-      <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Escribe un mensaje" />
-      <button onClick={sendMessage}>Enviar</button>
-      <div
-        style={{
-          height: "300px", // Altura fija
-          width: "100%", // Ancho completo
-          overflowY: "auto", // Habilitar scroll vertical
-          border: "1px solid #ccc", // Borde para delimitar la caja
-          padding: "10px", // Espaciado interno
-          borderRadius: "5px", // Bordes redondeados
-        }}>
-        {messages.map((msg, i) => (
-          <p key={i}>{user.nombre}: {msg}</p>
-        ))}
-      </div>
-      <hr />
-      <div>
-        <div className="upload-container">
-          <input type="file" onChange={handleFileChange} />
-          <button onClick={handleUpload}>Subir archivo</button>
-        </div>
-      </div>
-      <hr />
-      <div>
-        <h1>Archivos Subidos</h1>
-        <div className="file-list">
-          {files.map((file, index) => (
-            <div key={index} className="file-item">
-              {file}
-            </div>
+    <div style={{ display: "flex", height: "100vh" }}>
+      <div style={{ flex: 3, padding: "1rem", borderRight: "1px solid #ccc" }}>
+        <h1>Chat REST → WebSocket</h1>
+        <p>Bienvenido, {user.nombre}</p>
+        <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Escribe un mensaje" />
+        <button onClick={sendMessage}>Enviar</button>
+        <div
+          style={{
+            height: "300px", // Altura fija
+            width: "300px", // Ancho completo
+            overflowY: "auto", // Habilitar scroll vertical
+            border: "1px solid #ccc", // Borde para delimitar la caja
+            padding: "10px", // Espaciado interno
+            borderRadius: "5px", // Bordes redondeados
+          }}>
+          {messages.map((msg, i) => (
+            <p key={i}>{user.nombre}: {msg}</p>
           ))}
         </div>
+        <hr />
+        <div>
+          <h3>Archivos Subidos</h3>
+          <div className="file-list">
+            {files.map((file, index) => (
+              <div key={index} className="file-item">
+                {file}
+              </div>
+            ))}
+          </div>
+        </div>
+        <hr />
+        <div>
+          <div className="upload-container">
+            <input type="file" onChange={handleFileChange} />
+            <button onClick={handleUpload}>Subir archivo</button>
+          </div>
+        </div>
+
+      </div>
+      {/* Textarea Section */}
+      <div style={{ flex: 1, padding: "1rem" }} className="textarea-container">
+        <h2>Notas</h2>
+        <textarea
+          style={{ width: "500px", height: "70%" }}
+          placeholder="Escribe tus notas aquí..."
+          value={textareaContent}
+          onChange={(e) => setTextareaContent(e.target.value)}
+        ></textarea>
+        <button className="button-textarea" onClick={handleSaveText}>Guardar texto</button>
       </div>
     </div>
   );
