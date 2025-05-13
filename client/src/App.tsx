@@ -93,15 +93,17 @@ const App: React.FC = () => {
   };
 
   const sendMessage = async () => {
-    if (!input) return;
-
+    if (!input || !user) return;
+  
     await fetch("http://localhost:4000/api/message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: input }),
+      body: JSON.stringify({ message: input, userName: user.nombre }),
     });
+  
     setInput("");
   };
+  
 
   const handleSaveText = async () => {
     if (!textareaContent) {

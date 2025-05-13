@@ -88,14 +88,44 @@ server.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
 
-// Endpoint para enviar mensaje a todos los WebSocket conectados
-app.post("/api/message", (req, res) => {
-  const { message } = req.body;
-  if (!message) { return res.status(400).json({ error: "Mensaje vacío" }); }
 
+//-------------------------- Todo este codigo es para guardar los mensajes en un archivo JSON y emitirlos a través de WebSocket-------------------------- 
+const messagesFile = path.join(__dirname, "messages.json");
+
+// Función para guardar mensajes en el archivo JSON
+const saveMessage = (userName, message) => {
+  let messages = [];
+
+  // Si el archivo ya existe, leer su contenido
+  if (fs.existsSync(messagesFile)) {
+    const fileData = fs.readFileSync(messagesFile, "utf8");
+    messages = JSON.parse(fileData);
+  }
+
+  // Obtener la fecha con el nuevo formato
+  const now = new Date();
+  const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}:${String(now.getHours()).padStart(2, '0')}.${String(now.getMinutes()).padStart(2, '0')}.${String(now.getSeconds()).padStart(2, '0')}`;
+
+  // Agregar nuevo mensaje con usuario y fecha personalizada
+  messages.push({ usuario: userName, mensaje: message, fecha: formattedDate });
+
+  // Escribir el archivo actualizado
+  fs.writeFileSync(messagesFile, JSON.stringify(messages, null, 2), "utf8");
+};
+
+app.post("/api/message", (req, res) => {
+  const { message, userName } = req.body;
+  if (!message || !userName) {
+    return res.status(400).json({ error: "Mensaje o usuario vacío" });
+  }
+
+  // Guardar mensaje en JSON
+  saveMessage(userName, message);
+
+  // Emitir mensaje a clientes WebSocket
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(message);
+      client.send(`${userName}: ${message}`);
     }
   });
 
@@ -117,6 +147,24 @@ app.post("/save-text", (req, res) => {
       return res.status(500).send("Error al guardar el archivo.");
     }
     res.send("Archivo guardado correctamente.");
+  });
+});
+
+app.get("/download/:filename", (req, res) => {
+  const fileName = req.params.filename;
+  const filePath = path.join(__dirname, "uploads", fileName);
+
+  // Verifica si el archivo existe
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send("Archivo no encontrado.");
+  }
+
+  // Configura el encabezado para la descarga
+  res.download(filePath, fileName, (err) => {
+    if (err) {
+      console.error("Error al descargar el archivo:", err);
+      res.status(500).send("Error al procesar la descarga.");
+    }
   });
 });
 
