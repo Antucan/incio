@@ -54,9 +54,9 @@ app.post("/upload", (req, res) => {
   }
 
   // **Validación del tipo de archivo**
-  const extensionesPermitidas = ["application/pdf", "image/jpeg", "image/png"];
+  const extensionesPermitidas = ["text/plain"];
   if (!extensionesPermitidas.includes(archivo.mimetype)) {
-    return res.status(400).send("Formato de archivo no permitido. Solo se aceptan .pdf, .jpg y .png.");
+    return res.status(400).send("Formato de archivo no permitido. Solo se acepta .txt");
   }
 
   // Ruta de almacenamiento
@@ -131,7 +131,24 @@ app.post("/api/message", (req, res) => {
 
   res.json({ sent: true });
 });
-//-------------------------- Todo este codigo es para guardar los mensajes en un archivo JSON y emitirlos a través de WebSocket-------------------------- 
+
+// Endpoint para guardar texto como archivo
+app.post("/save-text", (req, res) => {
+  const { filename, content } = req.body;
+
+  if (!filename || !content) {
+    return res.status(400).send("Faltan datos: filename o content.");
+  }
+
+  const uploadPath = path.join(__dirname, "uploads", `${filename}.txt`);
+
+  fs.writeFile(uploadPath, content, (err) => {
+    if (err) {
+      return res.status(500).send("Error al guardar el archivo.");
+    }
+    res.send("Archivo guardado correctamente.");
+  });
+});
 
 app.get("/download/:filename", (req, res) => {
   const fileName = req.params.filename;
@@ -150,3 +167,4 @@ app.get("/download/:filename", (req, res) => {
     }
   });
 });
+
