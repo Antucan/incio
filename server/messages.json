@@ -1,37 +1,12 @@
 [
   {
     "usuario": "Profesor",
-    "mensaje": "hola",
-    "fecha": "2025-05-12T17:00:34.742Z"
+    "mensaje": "reprueba de archivo vacio sin corcheetes",
+    "fecha": "2025-05-13:19.18.46"
   },
   {
-    "usuario": "Profesor",
-    "mensaje": "buenos dias alumnos",
-    "fecha": "2025-05-12T17:00:55.328Z"
-  },
-  {
-    "usuario": "Profesor",
-    "mensaje": "example",
-    "fecha": "2025-05-12T17:05:44.386Z"
-  },
-  {
-    "usuario": "Ana",
-    "mensaje": "buenas profe",
-    "fecha": "2025-05-12T17:06:21.163Z"
-  },
-  {
-    "usuario": "Profesor",
-    "mensaje": "esto es un test",
-    "fecha": "2025-05-12T17:13:57.673Z"
-  },
-  {
-    "usuario": "Profesor",
-    "mensaje": "esto es el test numero 2",
-    "fecha": "2025-05-12:19.14.42"
-  },
-  {
-    "usuario": "Profesor",
-    "mensaje": "todo fresco",
-    "fecha": "2025-05-12:19.15.01"
+    "usuario": "Luis",
+    "mensaje": "hey sistemas",
+    "fecha": "2025-05-13:19.19.29"
   }
 ]

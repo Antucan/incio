@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Upload.css";
-
+import "./App.css";
 
 const App: React.FC = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
@@ -10,6 +10,18 @@ const App: React.FC = () => {
   const [email, setEmail] = useState("");
   const [textareaContent, setTextareaContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState("");
+
+  const handlePutText = async (fileName: string) => {
+    try {
+      const response = await fetch(`http://localhost:4000/download/${fileName}`);
+      const text = await response.text();
+      setTextareaContent(text);
+    } catch (error) {
+      console.error("Error al obtener el archivo:", error);
+      alert("No se pudo cargar el contenido del archivo.");
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -94,16 +106,16 @@ const App: React.FC = () => {
 
   const sendMessage = async () => {
     if (!input || !user) return;
-  
+
     await fetch("http://localhost:4000/api/message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: input, userName: user.nombre }),
     });
-  
+
     setInput("");
   };
-  
+
 
   const handleSaveText = async () => {
     if (!textareaContent) {
@@ -145,22 +157,29 @@ const App: React.FC = () => {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       <div style={{ flex: 3, padding: "1rem", borderRight: "1px solid #ccc" }}>
-        <h1>Chat REST → WebSocket</h1>
+        <h2>Chat REST → WebSocket</h2>
         <p>Bienvenido, {user.nombre}</p>
         <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Escribe un mensaje" />
         <button onClick={sendMessage}>Enviar</button>
-        <div
-          style={{
-            height: "300px", // Altura fija
-            width: "300px", // Ancho completo
-            overflowY: "auto", // Habilitar scroll vertical
-            border: "1px solid #ccc", // Borde para delimitar la caja
-            padding: "10px", // Espaciado interno
-            borderRadius: "5px", // Bordes redondeados
-          }}>
-          {messages.map((msg, i) => (
-            <p key={i}>{user.nombre}: {msg}</p>
-          ))}
+        <div style={{
+          justifyContent: "center",
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column"
+        }}>
+          <div
+            style={{
+              height: "300px", // Altura fija
+              width: "300px", // Ancho completo
+              overflowY: "auto", // Habilitar scroll vertical
+              border: "1px solid #ccc", // Borde para delimitar la caja
+              padding: "10px", // Espaciado interno
+              borderRadius: "5px", // Bordes redondeados
+            }}>
+            {messages.map((msg, i) => (
+              <p key={i}>{user.nombre}: {msg}</p>
+            ))}
+          </div>
         </div>
         <hr />
         <div>
@@ -168,13 +187,13 @@ const App: React.FC = () => {
           <div className="file-list">
             {files.map((file, index) => (
               <a
-              key={index}
-              className="file-item"
-              href={`http://localhost:4000/download/${file}`}
-              download={file}
-            >
-              {file}
-            </a>
+                key={index}
+                className="file-item"
+                href={`http://localhost:4000/download/${file}`}
+                download={file}
+              >
+                {file}
+              </a>
             ))}
           </div>
         </div>
@@ -197,6 +216,17 @@ const App: React.FC = () => {
           onChange={(e) => setTextareaContent(e.target.value)}
         ></textarea>
         <button className="button-textarea" onClick={handleSaveText}>Guardar texto</button>
+        <div>
+          <h3>Seleccionar archivo</h3>
+          <select onChange={(e) => setSelectedFile(e.target.value)}>
+            <option value="">Selecciona un archivo...</option>
+            {files.map((file, index) => (
+              <option key={index} value={file}>{file}</option>
+            ))}
+          </select>
+          <button className="button-textarea" onClick={() => handlePutText(selectedFile)}>
+            Cargar contenido</button>
+        </div>
       </div>
     </div>
   );
