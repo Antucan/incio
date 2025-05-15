@@ -177,7 +177,7 @@ const App: React.FC = () => {
               borderRadius: "5px", // Bordes redondeados
             }}>
             {messages.map((msg, i) => (
-              <p key={i}>{user.nombre}: {msg}</p>
+              <p key={i}>{msg}</p>
             ))}
           </div>
         </div>
