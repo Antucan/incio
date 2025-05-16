@@ -95,7 +95,7 @@ Se abrirá automáticamente en `http://localhost:3000`.
 - `client/src/App.tsx`: Interfaz principal de usuario con React Hooks.
 - `messages.json`: Registro de mensajes del chat.
 - `data.json`: Lista de usuarios autorizados.
-
+- `edit.json`: Registro de modificiaciones de los archivos en el textarea.
 ---
 
 ## 🔐 Requisitos
