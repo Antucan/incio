@@ -75,7 +75,7 @@ app.post("/upload", (req, res) => {
 // Endpoint para obtener lista de archivos
 app.get("/files", (req, res) => {
   const uploadDir = path.join(__dirname, "uploads");
-
+  // Verifica si la carpeta existe
   fs.readdir(uploadDir, (err, files) => {
     if (err) {
       return res.status(500).send("Error al leer la carpeta de archivos.");
@@ -141,7 +141,7 @@ app.post("/save-text", (req, res) => {
   }
 
   const uploadPath = path.join(__dirname, "uploads", `${filename}.txt`);
-
+  // Verifica si el archivo ya existe
   fs.writeFile(uploadPath, content, (err) => {
     if (err) {
       return res.status(500).send("Error al guardar el archivo.");
@@ -150,6 +150,7 @@ app.post("/save-text", (req, res) => {
   });
 });
 
+// Endpoint para descargar archivos
 app.get("/download/:filename", (req, res) => {
   const fileName = req.params.filename;
   const filePath = path.join(__dirname, "uploads", fileName);
@@ -166,5 +167,35 @@ app.get("/download/:filename", (req, res) => {
       res.status(500).send("Error al procesar la descarga.");
     }
   });
+});
+
+// Endpoint para registrar las ediciones en un archivo
+app.post("/api/edit", (req, res) => {
+  const { userName, fileName, content } = req.body;
+
+  if (!userName || !fileName || !content) {
+    return res.status(400).json({ error: "Faltan datos: usuario, archivo o contenido." });
+  }
+
+  const editLogFile = path.join(__dirname, "edit.json");
+  let editLogs = [];
+
+  // Si ya existe el archivo de registros, leer su contenido
+  if (fs.existsSync(editLogFile)) {
+    const fileData = fs.readFileSync(editLogFile, "utf8");
+    editLogs = JSON.parse(fileData);
+  }
+
+  // Obtener la fecha y hora actual
+  const now = new Date();
+  const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+  // Agregar nuevo registro
+  editLogs.push({ usuario: userName, archivo: fileName, fecha: formattedDate, contenido: content });
+
+  // Guardar el archivo actualizado
+  fs.writeFileSync(editLogFile, JSON.stringify(editLogs, null, 2), "utf8");
+
+  res.json({ message: "Edición guardada correctamente." });
 });
 

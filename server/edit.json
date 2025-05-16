@@ -1,0 +1,38 @@
+[
+  {
+    "usuario": "Profesor",
+    "archivo": "p1.txt",
+    "fecha": "2025-05-16 15:05:01",
+    "contenido": "prueba1"
+  },
+  {
+    "usuario": "Profesor",
+    "archivo": "p1",
+    "fecha": "2025-05-16 15:05:24",
+    "contenido": "prueba1"
+  },
+  {
+    "usuario": "Profesor",
+    "archivo": "alvaro",
+    "fecha": "2025-05-16 15:10:41",
+    "contenido": "alvaro"
+  },
+  {
+    "usuario": "Profesor",
+    "archivo": "alvar2",
+    "fecha": "2025-05-16 15:11:06",
+    "contenido": "Manitas"
+  },
+  {
+    "usuario": "Profesor",
+    "archivo": "pantano.txt",
+    "fecha": "2025-05-16 15:14:47",
+    "contenido": "pantano"
+  },
+  {
+    "usuario": "Profesor",
+    "archivo": "prueba20.txt",
+    "fecha": "2025-05-16 15:15:11",
+    "contenido": "Texto de prueba, modificación del texto de prueba. Prueba 20."
+  }
+]

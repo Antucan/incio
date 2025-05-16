@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [selectedFile, setSelectedFile] = useState("");
 
+  // función para cargar el contenido del archivo en el textarea
   const handlePutText = async (fileName: string) => {
     try {
       const response = await fetch(`http://localhost:4000/download/${fileName}`);
@@ -23,12 +24,35 @@ const App: React.FC = () => {
     }
   };
 
+  // función para enviar al servidor la modificación del archivo
+  const handleEdit = async (fileName: string) => {
+    if (!user || !fileName || !textareaContent) {
+      alert("Falta información para guardar la edición.");
+      return;
+    }
+  
+    await fetch("http://localhost:4000/api/edit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userName: user.nombre,
+        fileName,
+        content: textareaContent,
+      }),
+    });
+  
+    alert("Edición guardada correctamente.");
+  };
+  
+
+  // función para guardar el contenido del textarea en un archivo
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFile(event.target.files[0]);
     }
   };
 
+  // función para subir el archivo al servidor
   const handleUpload = async () => {
     if (!file) {
       alert("Selecciona un archivo primero.");
@@ -48,19 +72,23 @@ const App: React.FC = () => {
       return;
     }
 
+    // **Validación del nombre del archivo**
     const formData = new FormData();
     formData.append("archivo", file);
 
+    // **Envío del archivo al servidor**
     const response = await fetch("http://localhost:4000/upload", {
       method: "POST",
       body: formData,
     });
 
+    // **Manejo de errores**
     const result = await response.text();
     alert(result);
     fetchFiles();
   };
 
+  // **Conexión al WebSocket**
   useEffect(() => {
     if (user) {
       const ws = new WebSocket("ws://localhost:4000");
@@ -75,8 +103,10 @@ const App: React.FC = () => {
     }
   }, [user]);
 
+  // **Función para obtener la lista de archivos**
   const [files, setFiles] = useState<string[]>([]);
 
+  // **Función para obtener la lista de archivos del servidor**
   const fetchFiles = async () => {
     const response = await fetch("http://localhost:4000/files");
     const data = await response.json();
@@ -87,6 +117,7 @@ const App: React.FC = () => {
     fetchFiles();
   }, []);
 
+  // **Función para iniciar sesión**
   const handleLogin = async () => {
     if (!email) return;
     try {
@@ -104,6 +135,7 @@ const App: React.FC = () => {
     }
   };
 
+  // **Función para enviar mensajes al servidor**
   const sendMessage = async () => {
     if (!input || !user) return;
 
@@ -116,29 +148,37 @@ const App: React.FC = () => {
     setInput("");
   };
 
-
+  // **Función para guardar el contenido del textarea en un archivo**
   const handleSaveText = async () => {
     if (!textareaContent) {
       alert("El textarea está vacío.");
       return;
     }
-
+  
     const filename = prompt("Introduce el nombre del archivo (sin extensión):");
     if (!filename) {
       alert("Debes proporcionar un nombre para el archivo.");
       return;
     }
-
+  
+    const formattedFilename = `${filename}.txt`;
+  
     const response = await fetch("http://localhost:4000/save-text", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ filename, content: textareaContent }),
     });
-
+  
     const result = await response.text();
     alert(result);
+  
+    // **Registrar edición directamente con el nombre del nuevo archivo**
+    handleEdit(formattedFilename);
+  
+    // **Actualizar lista de archivos**
     fetchFiles();
   };
+  
 
   if (!user) {
     return (
